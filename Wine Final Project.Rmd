@@ -1,0 +1,232 @@
+---
+title: 'Final: Wine'
+author: 'Chase Baerlocher'
+Date: '6/12/2021'
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+c("GGally","Rmisc","tree","randomForest")
+
+install.packages("GGally")
+install.packages("Rmisc")
+install.packages("tree")
+install.packages("randomForest")
+
+require(ggplot2)
+require(tidyr)
+require(dplyr)
+require(GGally)
+require(Rmisc)
+require(tree)
+require(randomForest)
+
+```
+
+Big Question
+```{r Big Question}
+
+#"What factors of wine chemical qualities contribute most to higher overall quality ratings?"
+  
+```
+
+Report
+```{r Report}
+
+#I chose the Wine Quality data set because it was the most involved in the agriculture industry, which I hope to conduct research in one day.The data set lists Quality scores, as well as various chemical values found in specific wines. The data is broken into two distinct sets, one for Red Wine, and the other for White Wine. The only major processing problem I came into contact with was the initial issue of converting the data file into a readable format for the R program.
+
+```
+Wine CSV's
+
+```{r Wine.data}
+
+red.set<-read.csv("C:\\Users\\cwill\\Documents\\Data 115\\R Work 115\\Final\\wine.set.red.csv")
+white.set<-read.csv("C:\\Users\\cwill\\Documents\\Data 115\\R Work 115\\Final\\wine.set.white.csv")
+```
+Summary
+
+```{r Summary}
+
+summary(red.set)
+summary(white.set)
+
+```
+
+Scatter Plots Red
+```{r Scatter Red}
+
+scatter.smooth(red.set$volatile.acidity,red.set$quality)
+title(main="Red Wine Quality v Volatile Acidity")
+scatter.smooth(red.set$citric.acid,red.set$quality)
+title(main="Red Wine Quality v Citric Acid")
+scatter.smooth(red.set$residual.sugar,red.set$quality)
+title(main="Red Wine Quality v Residual Sugar")
+scatter.smooth(red.set$chlorides,red.set$quality)
+title(main="Red Wine Quality v Chlorides")
+scatter.smooth(red.set$free.sulfur.dioxide,red.set$quality)
+title(main="Red Wine Quality v Free Sulfur Dioxide")
+scatter.smooth(red.set$total.sulfur.dioxide,red.set$quality)
+title(main="Red Wine Quality v Total Sulfur Dioxide")
+scatter.smooth(red.set$density,red.set$quality)
+title(main="Red Wine Quality v Density")
+scatter.smooth(red.set$pH,red.set$quality)
+title(main="Red Wine Quality v pH")
+scatter.smooth(red.set$sulphates,red.set$quality)
+title(main="Red Wine Quality v Sulphates")
+scatter.smooth(red.set$alcohol,red.set$quality)
+title(main="Red Wine Quality v Alcohol")
+scatter.smooth(red.set$ï..fixed.acidity,red.set$quality)
+title(main="Red Wine Quality v Fixed Acidity")
+
+```
+
+Scatter Plots White
+```{r Scatter White}
+
+scatter.smooth(white.set$volatile.acidity,white.set$quality)
+title(main="White Wine Quality v Volatile Acidity")
+scatter.smooth(white.set$citric.acid,white.set$quality)
+title(main="White Wine Quality v Citric Acid")
+scatter.smooth(white.set$residual.sugar,white.set$quality)
+title(main="White Wine Quality v Residual Sugar")
+scatter.smooth(white.set$chlorides,white.set$quality)
+title(main="White Wine Quality v Chlorides")
+scatter.smooth(white.set$free.sulfur.dioxide,white.set$quality)
+title(main="White Wine Quality v Free Sulfur Dioxide")
+scatter.smooth(white.set$total.sulfur.dioxide,white.set$quality)
+title(main="White Wine Quality v Total Sulfur Dioxide")
+scatter.smooth(white.set$density,white.set$quality)
+title(main="White Wine Quality v Density")
+scatter.smooth(white.set$pH,white.set$quality)
+title(main="White Wine Quality v pH")
+scatter.smooth(white.set$sulphates,white.set$quality)
+title(main="White Wine Quality v Sulphates")
+scatter.smooth(white.set$alcohol,white.set$quality)
+title(main="White Wine Quality v Alcohol")
+scatter.smooth(white.set$ï..fixed.acidity,white.set$quality)
+title(main="White Wine Quality v Fixed Acidity")
+
+
+```
+Exploratory Analysis Results
+
+```{r Exploratory Results}
+
+#Based on data gathered from the basic summary and scatter plots generated, I can assume that Alcohol will likely be the primary factor in deciding the Quality score of both types of wine, with higher Alcohol values leading to higher Quality values. Furthermore, it can be presumed that Volatile Acidity will also play a role in determining the Quality value of both types of wine, with lower Volatile Acidity values leading to higher Quality values. From these two pieces of exploratory data, I can make the preliminary conclusion that Volatile Acidity and Alcohol are the two most important factors in determining wine Quality scores.
+
+```
+Analysis Methodology
+
+```{r Methodology}
+
+#I chose to use Multiple Linear Regression for both wine types as it is very useful when comparing multiple factors to each other in terms of how they affect a predictor. In the case of my analysis, I am trying to determine how the values assigned to various wine chemical qualities will affect the overall Quality score for each sample listed, which will be made easy by using MLR. One major con of using MLR is that some false connections can be made between causal factors, which can be fixed by using Cross Validation.
+
+```
+Multiple Linear Regression Red
+
+```{r MLR Red}
+
+library(ggplot2)
+
+fit.red.quality<-lm(quality~volatile.acidity + chlorides + residual.sugar + citric.acid + alcohol, data=red.set)
+summary(fit.red.quality)
+
+ggplot(red.set, aes(x=volatile.acidity,y=quality)) +
+  geom_point() +
+  geom_smooth(method = "lm",formula=y~x)
+ggplot(red.set, aes(x=chlorides,y=quality)) +
+  geom_point() +
+  geom_smooth(method = "lm",formula=y~x)
+ggplot(red.set, aes(x=residual.sugar,y=quality)) +
+  geom_point() +
+  geom_smooth(method = "lm",formula=y~x)
+ggplot(red.set, aes(x=citric.acid,y=quality)) +
+  geom_point() +
+  geom_smooth(method = "lm",formula=y~x)
+ggplot(red.set, aes(x=alcohol,y=quality)) +
+  geom_point() +
+  geom_smooth(method = "lm",formula=y~x)
+
+```
+
+Multiple Linear Regression White
+
+```{r MLR White}
+
+fit.white.quality<-lm(quality~volatile.acidity + chlorides + residual.sugar + citric.acid + alcohol, data=white.set)
+summary(fit.white.quality)
+
+ggplot(white.set, aes(x=volatile.acidity,y=quality)) +
+  geom_point() +
+  geom_smooth(method = "lm",formula=y~x)
+ggplot(white.set, aes(x=chlorides,y=quality)) +
+  geom_point() +
+  geom_smooth(method = "lm",formula=y~x)
+ggplot(white.set, aes(x=residual.sugar,y=quality)) +
+  geom_point() +
+  geom_smooth(method = "lm",formula=y~x)
+ggplot(white.set, aes(x=citric.acid,y=quality)) +
+  geom_point() +
+  geom_smooth(method = "lm",formula=y~x)
+ggplot(white.set, aes(x=alcohol,y=quality)) +
+  geom_point() +
+  geom_smooth(method = "lm",formula=y~x)
+
+```
+
+PCA Red
+```{r PCA Red}
+
+red.pca = select(red.set, c(volatile.acidity,chlorides,residual.sugar,citric.acid,alcohol))
+
+red.pca.sc<-prcomp(red.pca,center = T,scale. = T)
+screeplot(red.pca.sc)
+summary(red.pca.sc)
+
+
+```
+
+PCA White
+```{r PCA White}
+
+white.pca = select(white.set, c(volatile.acidity,chlorides,residual.sugar,citric.acid,alcohol))
+
+white.pca.sc<-prcomp(white.pca,center = T,scale. = T)
+screeplot(white.pca.sc)
+summary(white.pca.sc)
+
+```
+Tree Model
+```{r Tree Model}
+
+red.quality.tree<-tree(quality~.,data=red.set)
+plot(red.quality.tree)
+text(red.quality.tree)
+summary(red.quality.tree)
+mean(resid(red.quality.tree)^2)
+
+
+white.quality.tree<-tree(quality~.,data=white.set)
+plot(white.quality.tree)
+text(white.quality.tree)
+summary(white.quality.tree)
+mean(resid(white.quality.tree)^2)
+
+#According to the data, alcohol is a very good indicator for wine quality as it appears multiple times in both sets of tree models. The MSE values were both very low, indicating that the tree models performed very well
+```
+
+Conclusion
+
+```{r Conclusion}
+
+# In response to my "Big Question", it has been made clear that the primary chemical factor that generated a higher Quality score in both red and white wines was Alcohol, as the data suggests that there was a higher concentration of wines with higher Alcohol levels that were given higher Quality scores than wines with lower Alcohol levels. Furthermore, Volatile Acidity was also affected the overall Quality score that samples from both the red and white wines received, with lower Volatile Acidity values leading to higher Quality values. This information is shown in the MLR tables generated, as the Alcohol values were high positives for both data sets, indicating positive trends when used to predict for Quality, while the Volatile Acidity values were low negatives for both data sets, indicating negative trends when used to predict for Quality. The Red Wine data set was a little better than the White Wine data set for these predictions, as the MLR for it explained just over 30% of the variance in the data whereas the MLR for the White Wine set only explained 25%, but both functions are able to produce usable data.
+
+#To further support the findings from the MLR's, a Tree Model was made for both data sets using their full set of data, wherein both trees used Alcohol and Volatile Acidity as variables when used to predict Quality, indicating that they are very important variables in predicting Quality levels.Volatile Acidity appeared at the lower ranges of both Tree Models while Alcohol appeared at the higher range, indicating that higher Volatile Acidity values correlated with lower Quality values and higher Alcohol values correlated with higher Quality values. Finally, the MSE values for both Tree Models were fairly low, indicating that they are good predictors for use in Cross Verification with the MLR's preformed earlier.
+
+#To conclude, it can be stated that, in response to the question of "What factors of wine chemical qualities contribute most to higher overall quality ratings?", higher Alcohol levels and lower Volatile Acidity levels will likely result in higher Quality values. I would have liked to have been able to analyse data regarding the growing conditions of the wine grapes used to make the wine in both data sets, as that would have helped explain variation in some of the other variables, such as Residual Sugar and pH.
+
+```
+
+
